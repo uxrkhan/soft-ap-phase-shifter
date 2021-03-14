@@ -3,12 +3,12 @@
 #define dac1 0x62
 #define dac2 0x63  
 
-float voltages[] = {1, 1.65, 2, 3.3};
+float voltages[] = {1, 2, 2.5, 3.3};
 int vals[4];
 
 void setup() {
   Wire.begin();
-  Wire1.begin(19,18,100000);
+  Wire1.begin(18,19,100000);
 }
 
 void send1(byte addr, int val) {
