@@ -1,36 +1,23 @@
-#include <TFT.h>
+#include <TFT_eSPI.h>
 #include <SPI.h>
 
-#define CS D2
-#define DC 10
-#define RST 11
+#define TFT_BL 15
 
-TFT TFTscreen = TFT(CS, DC, RST);
-
-char txt[4];
+TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
-	TFTscreen.begin();
-	TFTscreen.background(0,0,0);	// black background
+//  Serial.begin(115200);
+  pinMode(TFT_BL, OUTPUT);
+  digitalWrite(TFT_BL, 255);
+  tft.init();
+  tft.setRotation(1);
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_GREEN);
 
-	TFTscreen.stroke(255, 255, 255);	// white stroke
-	TFTscreen.setTextSize(2);
-	TFTscreen.text("Value: ", 0, 0);
-
-	TFTscreen.setTextSize(5);		// bigger font size for value
+  tft.fillScreen(TFT_BLACK);
+  tft.drawString("Hello world!", 3, 3);
 }
 
 void loop() {
-	String val = String(analogRead(A0));
-	val.toCharArray(txt, 4);
-
-	// write the text in white color
-	TFTscreen.stroke(255, 255, 255);
-	TFTscreen.text(txt, 0, 20);
-
-	delay(200);
-
-	// erase the text by overwriting in black
-	TFTscreen.stroke(0, 0, 0);
-	TFTscreen.text(txt, 0, 20);
+  
 }
