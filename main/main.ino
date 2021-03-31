@@ -5,8 +5,11 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
-#define dac1 0x62
-#define dac2 0x63
+#define dac1a 0x60
+#define dac1b 0x63
+#define dac2a 0x62
+#define dac2b 0x63
+
 #define SDA2 12
 #define SCL2 13
 
@@ -14,7 +17,7 @@
 // SCL1 22
 // SDA1 21
 // SCL2 13
-// SDA2 12
+// SDA2 14
 // DIN  23
 // CS    2
 // SCK  18
@@ -22,8 +25,8 @@
 // BL   15
 // RST   4 
 
-const char* ssid = "esp";
-const char* password =  "esppse32";
+const char* ssid = "ESP32";
+const char* password =  "espesp32";
 int queries;
 float dataLog[5];
 int vals[4];
@@ -85,7 +88,11 @@ void setup(){
   });
   server.on("/case1.html", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/case1.html", "text/html");
-    processFormParams(request);  
+     AsyncWebParameter* p = request->getParam(0);
+    String scanAngleStr = p->value();
+    int scanAngle = scanAngleStr.toInt();
+    Serial.println(String(p->name()) + ": " + String(scanAngle));
+    // processFormParams(request);  
   });
   server.on("/case2.html", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/case2.html", "text/html");
@@ -124,18 +131,17 @@ void send2(byte addr, int val) {
 }
 
 void loop(){
-  if(queries == 4){
-    // static input
-    for (int i = 0; i < 4; i++) {
-      vals[i] = floor(dataLog[i] * (4095/3.3));
-    }
-    send1(dac1, vals[0]);
-    send1(dac2, vals[1]);
-    send2(dac1, vals[2]);
-    send2(dac2, vals[3]); 
-  }
-  else if (queries == 5) {
-    // dynamic input
-	// TODO...
-  }
+//  if(queries == 4){
+//    // static input
+//    for (int i = 0; i < 4; i++) {
+//      vals[i] = floor(dataLog[i] * (4095/3.3));
+//    }
+//    send1(dac1a, vals[0]);
+//    send1(dac1b, vals[1]);
+//    send2(dac2a, vals[2]);
+//    send2(dac2b, vals[3]); 
+//  }
+//  else if (queries == 5) {
+//    
+//  }
 }
