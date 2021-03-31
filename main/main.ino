@@ -2,22 +2,39 @@
 #include "SPIFFS.h"
 #include "ESPAsyncWebServer.h"
 #include <Wire.h>
+#include <TFT_eSPI.h>
+#include <SPI.h>
 
 #define dac1 0x62
 #define dac2 0x63
+#define SDA2 12
+#define SCL2 13
+
+// connections
+// SCL1 22
+// SDA1 21
+// SCL2 13
+// SDA2 12
+// DIN  23
+// CS    2
+// SCK  18
+// DC    5
+// BL   15
+// RST   4 
 
 const char* ssid = "esp";
 const char* password =  "esppse32";
 int queries;
-int dataLog[5];
+float dataLog[5];
 int vals[4];
 
 AsyncWebServer server(80);
+TFT_eSPI tft = TFT_eSPI();
 
 void processFormParams(AsyncWebServerRequest *request) {
   int paramsNr = request->params();
   queries = paramsNr;
-  Serial.println(paramsNr);
+  Serial.println("# params: " + String(paramsNr));
 
   for(int i=0; i<paramsNr; i++){
     AsyncWebParameter* p = request->getParam(i);
@@ -25,9 +42,21 @@ void processFormParams(AsyncWebServerRequest *request) {
     Serial.println(p->name());
     Serial.print("Parameter Value: ");
     Serial.println(p->value());
-    Serial.println("------");
-    dataLog[i] = (p->value()).toInt();
+    dataLog[i] = (p->value()).toFloat();
   }
+  Serial.println("------");
+
+  drawValues();
+}
+
+void drawValues() {
+  int xs = 3, ys = 36;
+  tft.fillRect(xs, ys, 160, 84, TFT_BLUE);
+  tft.setTextSize(2);
+  tft.drawString(String("PORT 1 > ") + String(dataLog[0]), xs, ys + 3);
+  tft.drawString(String("PORT 2 > ") + String(dataLog[1]), xs, ys + 23);
+  tft.drawString(String("PORT 3 > ") + String(dataLog[2]), xs, ys + 43);
+  tft.drawString(String("PORT 4 > ") + String(dataLog[3]), xs, ys + 63);
 }
 
 void setup(){
@@ -65,7 +94,17 @@ void setup(){
   
   server.begin();
   Wire.begin();
-  Wire1.begin(19,18,100000);
+  Wire1.begin(SDA2,SCL2,100000);
+
+  tft.init();
+  tft.setRotation(1);
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextSize(1);
+  tft.setTextColor(TFT_GREEN);
+  tft.drawString("SSID: " + String(ssid), 3, 3);
+  tft.drawString("PASS: " + String(password), 3, 13);
+  tft.drawString("IP  : " + String(IP), 3, 23);
+  tft.drawRect(1, 33, 160, 1, TFT_GREEN);
 }
 
 void send1(byte addr, int val) {
@@ -86,8 +125,9 @@ void send2(byte addr, int val) {
 
 void loop(){
   if(queries == 4){
+    // static input
     for (int i = 0; i < 4; i++) {
-      vals[i] = ceil(dataLog[i] * (4095/3.3));
+      vals[i] = floor(dataLog[i] * (4095/3.3));
     }
     send1(dac1, vals[0]);
     send1(dac2, vals[1]);
@@ -95,6 +135,7 @@ void loop(){
     send2(dac2, vals[3]); 
   }
   else if (queries == 5) {
-    
+    // dynamic input
+	// TODO...
   }
 }
