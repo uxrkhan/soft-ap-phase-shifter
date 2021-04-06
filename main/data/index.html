@@ -1,20 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<link rel="stylesheet" type="text/css" href="csstest.css">
-	<title>Phase Shifter Case Selection</title>
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Phase Shifter</title>
 </head>
 <body>
-	<h1 class="title" style="font-family: Arial; background-color: #b3b3ff; text-align:center;";>Phase Shifter Case Selection</h1>
+    <header>
+        <h4>Phase Shifter</h4>
+    </header>
+    <div class="container">
+        <main>
+            <form id="case1" class="buttons" action="/" method="get">
+                <div class="case">
+                    <div class="title">CLEAR</div>
+                    <div class="angles zero">
+                        <button id="clear" class="angle" type="submit" name="clear" value="0">0°</button>
+                    </div>
+                </div>
+                <div class="case">
+                    <div class="title">MAIN BEAM SCAN</div>
+                    <div class="angles">
+                        <button id="p15" class="angle" type="submit" name="scan-angle-case1" value="15">+15°</button>
+                        <button class="angle" type="submit" name="scan-angle-case1" value="-15">-15°</button>
+                        <button class="angle" type="submit" name="scan-angle-case1" value="30">+30°</button>
+                        <button class="angle" type="submit" name="scan-angle-case1" value="-30">-30°</button>
+                        <button class="angle" type="submit" name="scan-angle-case1" value="45">+45°</button>
+                        <button class="angle" type="submit" name="scan-angle-case1" value="-45">-45°</button>
+                    </div>
+                </div>
+            </form>
+            
+            
+            <form id="case2" class="buttons" action="/#case2" method="get">
+                <div class="case">
+                    <div class="title">DUAL BEAM SCAN</div>
+                    <div class="angles span">
+                        <button class="angle dual" type="submit" name="scan-angle-case2" value="30">
+                            <div>+30°</div>
+                            <div>-30°</div>
+                        </button>
+                    </div>
+                </div>
+            </form>
 
-	<button style="padding: 30px 50px color: #8a8a8a; position: absolute; left: 200px; top: 150px;" type = "button"; class ="button"; onclick="location.href='case1.html'"> 
-		Main Beam Scan
-	</button>
+            <form id="case3" class="buttons" action="/#case3" method="get">
+                <div class="case">
+                    <div class="title">CONTINUOUS BEAM SCAN</div>
+                    <input class ="input" type="text" name="interval" id="interval" placeholder="Enter switching time in s" required/> 
+                    <div class="angles">
+                        <button class="angle" type="submit" name="scan-angle-case3" value="15">+15°</button>
+                        <button class="angle" type="submit" name="scan-angle-case3" value="-15">-15°</button>
+                    </div>
+                </div>
+            </form>
 
-	<button style="padding: 30px 50px color: #8a8a8a; position: absolute; right: 200px; top: 150px;" type = "button"; class ="button"; onclick="location.href='case2.html'"> 
-		Dual Beam Scan
-	</button>
+            <form id="case4" class="buttons" action="/#case4" method="get">
+                <div class="case">
+                    <div class="title">CONTINUOUS DUAL BEAM SCAN</div>
+                    <input class ="input" type="text" name="interval" id="interval" placeholder="Enter switching time in s" required/> 
+                    <div class="angles span">
+                        <button class="angle dual" type="submit" name="scan-angle-case4" value="30">
+                            <div>+30°</div>
+                            <div>-30°</div>
+                        </button>
+                    </div>
+                </div>
+            </form>
 
+            <form id="case5" class="buttons" action="/#case5" method="get">
+                <div class="case">
+                    <div class="title">RANDOM SCAN ORDER</div>
+                    <input class ="input" type="text" name="scan-order" placeholder="Enter scan angles" required/>
+                    <input class ="input" type="text" name="interval" placeholder="Enter switching time in s" required/>
+                    <div class="angles span">
+                        <button class="angle dual" type="submit" name="scan-angle-case5" value="submit" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <form id="manual" class="buttons" action="/#manual" method="get">
+                <div class="case">
+                    <div class="title">MANUAL VOLTAGE INPUT</div>
+                    <input class ="input" type="text" name="port1" placeholder="Enter port 1 voltage" required/>
+                    <input class ="input" type="text" name="port2" placeholder="Enter port 2 voltage" required/>
+                    <input class ="input" type="text" name="port3" placeholder="Enter port 3 voltage" required/>
+                    <input class ="input" type="text" name="port4" placeholder="Enter port 4 voltage" required/>
+                    <div class="angles span">
+                        <button class="angle dual" type="submit" name="manual" value="submit" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </main>
+    </div>
+    <footer>
+        Project by Uzair and Avnish
+    </footer>
 </body>
+<script>
+
+</script>
 </html>
