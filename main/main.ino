@@ -4,6 +4,8 @@
 #include <Wire.h>
 #include <TFT_eSPI.h>
 #include <SPI.h>
+#include <vector>
+using namespace std;
 
 #define Vmax 11.65
 
@@ -40,11 +42,16 @@ float Vctl[][4] = {{ 0.00,  0.00,  0.00,  0.00},
 				   { 0.00,  0.75,  6.82, 11.65},
 				   { 1.65,  0.00,  0.00,  1.65}};
 
+int ang[] = {0, 15, 30, 45, -15, -30, -45, 30};
+
 short  _case = -1;
 String _casename;
 int    _interval = 1;
 int    _scanangle = 0;
 bool   _inprocess = false;
+int    _nofangles;
+vector<int> _row_order;
+vector<int> _angle_order;
 
 AsyncWebServer server(80);
 TFT_eSPI tft = TFT_eSPI();
@@ -76,26 +83,26 @@ int getRow(int scanAngle) {
 
 void drawValues(float Vport[], String title, int scanAngle) {
 	int xs = 3, ys = 25;
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(title, xs, ys);
-	tft.setTextColor(TFT_GREEN);
-	tft.fillRect(xs, ys, 160, 84, TFT_BLUE);
+	tft.fillRect(xs, ys, 160, 84, TFT_BLACK);
+  tft.setTextColor(TFT_WHITE);
+  tft.drawString(title, xs, ys);
+  tft.setTextColor(TFT_GREEN);
 	tft.setTextSize(1);
 	int angles[4] = {0};
-	if (title == "Main Beam Scan" || title == "Continuous Beam Scan") {
-		for (int i = 0; i < 4; i++) 
-		angles[i] = i * scanAngle;
-	} else if (title == "Dual Beam Scan" || title == "Continuous Dual Beam Scan") {
+	if (title == "Dual Beam Scan" || title == "Continuous Dual Beam Scan") {
 		angles[0] = scanAngle;
 		angles[3] = -scanAngle;
 	} else if (title == "Manual") {
 		for (int i = 0; i < 4; i++) 
 		  angles[i] = -1;
-	}
-	tft.drawString(String("PORT 1 > ") + String(Vport[0]) + " V   " + String(angles[0]) + "*", xs, ys + 13);
-	tft.drawString(String("PORT 2 > ") + String(Vport[1]) + " V   " + String(angles[1]) + "*", xs, ys + 33);
-	tft.drawString(String("PORT 3 > ") + String(Vport[2]) + " V   " + String(angles[2]) + "*", xs, ys + 53);
-	tft.drawString(String("PORT 4 > ") + String(Vport[3]) + " V   " + String(angles[3]) + "*", xs, ys + 73);
+	} else {
+    for (int i = 0; i < 4; i++) 
+    angles[i] = i * scanAngle;
+  } 
+	tft.drawString(String("PORT 1 > ") + String(Vport[0]) + " V   " + String(angles[0]) + " deg", xs, ys + 13);
+	tft.drawString(String("PORT 2 > ") + String(Vport[1]) + " V   " + String(angles[1]) + " deg", xs, ys + 33);
+	tft.drawString(String("PORT 3 > ") + String(Vport[2]) + " V   " + String(angles[2]) + " deg", xs, ys + 53);
+	tft.drawString(String("PORT 4 > ") + String(Vport[3]) + " V   " + String(angles[3]) + " deg", xs, ys + 73);
 }
 
 void sendVoltages(float Vport[], String title, int scanAngle) {
@@ -128,6 +135,19 @@ void send2(byte addr, int val) {
 	Wire1.write(val >> 4);
 	Wire1.write(val << 4);
 	Wire1.endTransmission();
+}
+
+vector<int> str2order(String str) {
+  vector<int> order;
+  char str2[str.length()+1];
+  str.toCharArray(str2, str.length()+1);
+  char* temp = strtok(str2, " ");
+  while (temp) {
+    int row = getRow(String(temp).toInt());
+    order.push_back(row);
+    temp = strtok(NULL, " ");
+  }
+  return order;
 }
 
 // main functions
@@ -191,6 +211,11 @@ void setup() {
 			_interval = getParamInt(request, "interval") * 1000;
 			_casename = "Continuous Beam Scan";
 			_case = 3;
+      _angle_order = {1, 2, 3, 0};
+      if (_scanangle == 15) 
+        _row_order = {1, 2, 3, 0};
+      else
+        _row_order = {4, 5, 6, 0};
       _inprocess = true;
 		} else if (request->hasParam("scan-angle-case4")) {
 			// case 4
@@ -201,13 +226,18 @@ void setup() {
       _inprocess = true;
 		} else if (request->hasParam("scan-angle-case5")) {
 			// case 5
+			_interval = getParamInt(request, "interval") * 1000;
+			_casename = "Random Scan Order";
       _case = 5;
-			String inputValuesString = (request->getParam("scan-order"))->value();
-			int interval_ms = getParamInt(request, "interval") * 1000;
-			String title = "Random Scan Order";
-			// int order[] = str2order(inputValuesString);
-			// for (int i = 0; )
-
+      String inputValuesString = (request->getParam("scan-order"))->value();
+      Serial.println("Random:" + inputValuesString);
+      _row_order = str2order(inputValuesString);
+      _nofangles = _row_order.size();
+      _angle_order.clear();
+      for (int i = 0; i < _nofangles; i++) {
+        _angle_order.push_back(ang[_row_order[i]]);
+      }
+      _inprocess = true;
 		} else if (request->hasParam("manual")) {
 			// manual
 			float Vman[4] = {0};
@@ -228,37 +258,15 @@ void setup() {
 }
 
 void loop() {
+  // cases that require switching
   if (_case == 3) {
-    if (_scanangle == 15) {
-      while(_inprocess) {
+    while(_inprocess) {
+      for (int i = 0; i < 4; i++) {
         if (!_inprocess) break;
-        sendVoltages(Vctl[1], _casename, _scanangle * 1);
-        delay(_interval);
-        if (!_inprocess) break;
-        sendVoltages(Vctl[2], _casename, _scanangle * 2);
-        delay(_interval);
-        if (!_inprocess) break;
-        sendVoltages(Vctl[3], _casename, _scanangle * 3);
-        delay(_interval);
-        if (!_inprocess) break;
-        sendVoltages(Vctl[0], _casename, _scanangle * 0);
+        sendVoltages(Vctl[_row_order[i]], _casename, _scanangle * _angle_order[i]);
         delay(_interval);
       }
-    } else if (_scanangle == -15) {
-      while(_inprocess) {          
-        if (!_inprocess) break;
-        sendVoltages(Vctl[4], _casename, _scanangle * 1);
-        delay(_interval);
-        if (!_inprocess) break;
-        sendVoltages(Vctl[5], _casename, _scanangle * 2);
-        delay(_interval);
-        if (!_inprocess) break;
-        sendVoltages(Vctl[6], _casename, _scanangle * 3);
-        delay(_interval);
-        if (!_inprocess) break;
-        sendVoltages(Vctl[0], _casename, _scanangle * 0);
-        delay(_interval);
-      }
+      if (!_inprocess) break;
     }
   } else if (_case == 4) {
     while(_inprocess) {          
@@ -266,8 +274,17 @@ void loop() {
       sendVoltages(Vctl[7], _casename, _scanangle);
       delay(_interval);
       if (!_inprocess) break;
-      sendVoltages(Vctl[0], _casename, _scanangle);
+      sendVoltages(Vctl[0], _casename, 0);
       delay(_interval);
+    }
+  } else if (_case == 5) {
+    while(_inprocess) {
+      for (int i = 0; i < _nofangles; i++) {
+        if (!_inprocess) break;
+        sendVoltages(Vctl[_row_order[i]], _casename, _angle_order[i]);
+        delay(_interval);
+      }
+      if (!_inprocess) break;
     }
   }
 }
