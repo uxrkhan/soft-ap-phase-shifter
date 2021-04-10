@@ -13,7 +13,7 @@
     </header>
     <div class="container">
         <main>
-            <form id="case1" class="buttons" action="/" method="get">
+            <form id="case1" class="buttons" action="/" method="get" autocomplete='off'>
                 <div class="case">
                     <div class="title">CLEAR</div>
                     <div class="angles zero">
@@ -34,7 +34,7 @@
             </form>
             
             
-            <form id="case2" class="buttons" action="/#case2" method="get">
+            <form id="case2" class="buttons" action="/#case2" method="get" autocomplete='off'>
                 <div class="case">
                     <div class="title">DUAL BEAM SCAN</div>
                     <div class="angles span">
@@ -46,10 +46,10 @@
                 </div>
             </form>
 
-            <form id="case3" class="buttons" action="/#case3" method="get">
+            <form id="case3" class="buttons" action="/#case3" method="get" autocomplete='off'>
                 <div class="case">
                     <div class="title">CONTINUOUS BEAM SCAN</div>
-                    <input class ="input" type="text" pattern="^\d+$" name="interval" placeholder="Enter switching time in s" required/> 
+                    <input class ="input" type="number" min="1" name="interval" placeholder="Enter switching time in s" oninvalid="this.setCustomValidity('Please enter a positive number')" oninput="this.setCustomValidity('')" required/> 
                     <div class="angles">
                         <button class="angle" type="submit" name="scan-angle-case3" value="15">+15°</button>
                         <button class="angle" type="submit" name="scan-angle-case3" value="-15">-15°</button>
@@ -57,10 +57,10 @@
                 </div>
             </form>
 
-            <form id="case4" class="buttons" action="/#case4" method="get">
+            <form id="case4" class="buttons" action="/#case4" method="get" autocomplete='off'>
                 <div class="case">
                     <div class="title">CONTINUOUS DUAL BEAM SCAN</div>
-                    <input class ="input" type="text" pattern="^\d+$" name="interval" placeholder="Enter switching time in s" required/> 
+                    <input class ="input" type="number" min="1" name="interval" placeholder="Enter switching time in s" required oninvalid="this.setCustomValidity('Please enter a positive number')" oninput="this.setCustomValidity('')"/> 
                     <div class="angles span">
                         <button class="angle dual" type="submit" name="scan-angle-case4" value="30">
                             <div>+30°</div>
@@ -70,11 +70,11 @@
                 </div>
             </form>
 
-            <form id="case5" class="buttons" action="/#case5" method="get">
+            <form id="case5" class="buttons" action="/#case5" method="get" autocomplete='off'>
                 <div class="case">
                     <div class="title">RANDOM SCAN ORDER</div>
-                    <input class ="input" type="text" pattern="^-*(0|15|30|45)+(\s+-*(0|15|30|45))*$" name="scan-order" placeholder="Enter scan angles" required/>
-                    <input class ="input" type="text" pattern="^\d+$" name="interval" placeholder="Enter switching time in s" required/>
+                    <input class ="input" type="text" pattern="^^[\+-]*(0|15|30|45){1}(\s+[\+-]*(0|15|30|45){1})*$" name="scan-order" placeholder="Enter scan angles" required oninvalid="this.setCustomValidity('Please angles from 0, ±15, ±30 or ±45 seperated by spaces.')" oninput="this.setCustomValidity('')"/>
+                    <input class ="input" type="number" min="1" name="interval" placeholder="Enter switching time in s" required oninvalid="this.setCustomValidity('Please enter a positive number')" oninput="this.setCustomValidity('')"/>
                     <div class="angles span">
                         <button class="angle dual" type="submit" name="scan-angle-case5" value="submit" type="submit">
                             Submit
@@ -83,13 +83,13 @@
                 </div>
             </form>
 
-            <form id="manual" class="buttons" action="/#manual" method="get">
+            <form id="manual" class="buttons" action="/#manual" method="get" autocomplete='off'>
                 <div class="case">
                     <div class="title">MANUAL VOLTAGE INPUT</div>
-                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port1" placeholder="Enter port 1 voltage" required/>
-                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port2" placeholder="Enter port 2 voltage" required/>
-                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port3" placeholder="Enter port 3 voltage" required/>
-                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port4" placeholder="Enter port 4 voltage" required/>
+                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port1" placeholder="Enter port 1 voltage" required oninvalid="this.setCustomValidity('Input should be in the range [0-11.65]')" oninput="this.setCustomValidity('')"/>
+                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port2" placeholder="Enter port 2 voltage" required oninvalid="this.setCustomValidity('Input should be in the range [0-11.65]')" oninput="this.setCustomValidity('')"/>
+                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port3" placeholder="Enter port 3 voltage" required oninvalid="this.setCustomValidity('Input should be in the range [0-11.65]')" oninput="this.setCustomValidity('')"/>
+                    <input class ="input" pattern="^(\d(\.\d{1,2}){0,1}|10(\.\d{1,2}){0,1}|11(\.([0-5]\d{0,1}|6[0-5]{0,1})){0,1})$" type="text" name="port4" placeholder="Enter port 4 voltage" required oninvalid="this.setCustomValidity('Input should be in the range [0-11.65]')" oninput="this.setCustomValidity('')"/>
                     <div class="angles span">
                         <button class="angle dual" type="submit" name="manual" value="submit" type="submit">
                             Submit
