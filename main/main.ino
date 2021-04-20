@@ -3,7 +3,7 @@
 #include "ESPAsyncWebServer.h"
 #include <Wire.h>
 //#include <TFT_eSPI.h>
-#include <SPI.h>
+//#include <SPI.h>
 #include <vector>
 using namespace std;
 
@@ -76,7 +76,7 @@ vector<int> _row_order;
 vector<int> _angle_order;
 
 AsyncWebServer server(80);
-TFT_eSPI tft = TFT_eSPI();
+//TFT_eSPI tft = TFT_eSPI();
 
 // helper functions
 
@@ -134,7 +134,7 @@ void sendVoltages(float Vport[], String title, int scanAngle) {
   for (int i = 0; i < 4; i++) {
     vals[i] = floor((Vport[i] / Vmax) * 4095);
     dac_op[i] = Vport[i] / Vmax * 3.3;
-    //	  Serial.println("PORT " + String(i+1) + ": " + String(Vport[i]) + " V  i=" + String(vals[i]) + "  Vdac=" + String(dac_op[i]) );
+    Serial.println("PORT " + String(i+1) + ": " + String(Vport[i]) + " V  i=" + String(vals[i]) + "  Vdac=" + String(dac_op[i]) );
   }
   send1(dac1a, vals[0]);
   send1(dac1b, vals[1]);
@@ -243,7 +243,6 @@ void setup() {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     _inprocess = false;
-    request->send(SPIFFS, "/index.html", "text/html");
     if (request->hasParam("clear")) {
       // case 0
       _case = 0;
@@ -319,10 +318,27 @@ void setup() {
       sendVoltages(Vman, "Manual", -1);
       segment_disp(_case);
     }
+    if (request->hasParam("nowifi")) {
+      if (request->getParam("nowifi")->value() == "true") {
+        request->send(SPIFFS, "/disconnect.html", "text/html");
+        Serial.println("Disconnecting server...");
+        server.end();
+        delay(1000);
+        WiFi.softAPdisconnect(true);
+      } else {
+        request->send(SPIFFS, "/index.html", "text/html");
+      }
+    } else {
+      request->send(SPIFFS, "/index.html", "text/html");
+    }
   });
 
   server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/styles.css", "text/css");
+  });
+
+  server.on("/disconnect.html", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/disconnect.html", "text/html");
   });
 
   server.begin();

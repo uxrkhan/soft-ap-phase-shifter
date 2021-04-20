@@ -6,6 +6,65 @@
     margin: 0;
 }
 
+.check {
+    padding: 1em;
+    border: 1px solid rgb(172,172,172);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.check .label {
+    line-height: 40px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 17px;
+}
+
+.flipswitch {
+    position: relative;
+    background: rgb(193, 193, 193);
+    width: 80px;
+    height: 40px;
+    -webkit-appearance: initial;
+    border-radius: 20px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    outline: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.flipswitch:checked {
+    background: rgb(87, 255, 134);
+    transition: all 0.1s ease-in 0s;
+}
+  
+.flipswitch:after {
+    position: absolute;
+    top: 10%;
+    display: block;
+    line-height: 30px;
+    width: 40%;
+    height: 80%;
+    background: #fff;
+    box-sizing: border-box;
+    text-align: center;
+    transition: all 0.1s ease-in 0s;
+    border-radius: 15px;
+    content: "";
+}
+  
+.flipswitch:after {
+    left: 5%;
+}
+  
+.flipswitch:checked:after {
+    left: 55%;
+}
+
 .container {
     width: 100%;
     max-width: 400px;
@@ -105,6 +164,14 @@ form:last-child .case {
     padding: 10px;
     border-radius: 10px;
     border: 2px solid gray;
+}
+
+#reset {
+    margin-top: 20px;
+}
+
+.reset-case {
+    border: none;
 }
 
 footer {

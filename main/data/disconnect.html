@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase Shifter</title>
+</head>
+<style>
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;font-size:15px;text-align:center;margin:0}header{padding:1em;text-align:center;background-color:grey}.container{width:100%;max-width:400px;margin:10px auto;height:100%;display:flex;flex-direction:column;align-items:center;border:1px solid #acacac;border-radius:10px;position:relative}.case{padding:20px;border-bottom:1px solid #acacac}.case .title{margin-bottom:20px}#reset{margin-top:20px}.reset-case{border:none}.angles{display:grid;grid-template-columns:auto auto;gap:20px}.zero{display:grid;grid-template-columns:auto;gap:20px}.angle{border:none;padding:1em;border-radius:10px}.angle:hover{background:#b6b6b6;cursor:pointer}.angle:active{background:#bdbdbd}.zero .angle{background:#57ff86}.zero .angle:hover{background:#42c066;cursor:pointer}.zero .angle:active{background:#359450;cursor:pointer}footer,header,main{width:inherit;margin:0}
+</style>
+<body>
+    <header>
+        <h4>Phase Shifter</h4>
+    </header>
+    <main>
+        <div class="container">
+            <div class="case reset-case">
+                <form action="/">
+                    <div>
+                        <h1>Access point disconnected.</h1>
+                        <br>
+                        <p>Please manually restart the WiFi module, reconnect to the WiFi and then click on "Reset"</p></div>        
+                    <div class="angles zero">
+                        <button id="reset" class="angle" type="submit">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
